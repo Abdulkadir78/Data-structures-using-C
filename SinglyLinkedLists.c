@@ -19,12 +19,13 @@ struct node *delete_beginning(struct node *);
 struct node *delete_end(struct node *);
 struct node *delete_after(struct node *);
 struct node *delete_list(struct node *);
+struct node *sort_list(struct node *);
 struct node *display(struct node *);
 
 int main()
 {
     int choice;
-    printf("*****MENU*****\n1-Create list\n2-Insert at beginning\n3-Insert at end\n4-Insert before an element\n5-Insert after an element\n6-Delete a node\n7-Delete at beginning\n8-Delete at end\n9-Delete after an element\n10-Delete whole list\n11-Display the list\n");
+    printf("*****MENU*****\n1-Create list\n2-Insert at beginning\n3-Insert at end\n4-Insert before an element\n5-Insert after an element\n6-Delete a node\n7-Delete at beginning\n8-Delete at end\n9-Delete after an element\n10-Delete whole list\n11-Sort the list\n12-Display the list\n13-Exit\n");
 
     do
     {
@@ -84,11 +85,15 @@ int main()
             break;
 
         case 11:
+            start = sort_list(start);
+            break;
+
+        case 12:
             start = display(start);
             break;
 
         default:
-            if (choice == 12)
+            if (choice == 13)
             {
                 break;
             }
@@ -97,7 +102,7 @@ int main()
                 printf("Invalid choice\n");
             }
         }
-    } while (choice != 12);
+    } while (choice != 13);
 
     return 0;
 }
@@ -318,15 +323,63 @@ struct node *delete_list(struct node *start)
     return start;
 }
 
+struct node *sort_list(struct node *start)
+{
+    int temp;
+    struct node *ptr1, *ptr2;
+    ptr1 = start;
+
+    ptr2 = ptr1;
+
+    if (start == NULL)
+    {
+        printf("There is no list\n");
+    }
+
+    else
+    {
+        while (ptr1->next != NULL)
+        {
+            ptr2 = ptr1->next;
+
+            while (ptr2 != NULL)
+            {
+                if (ptr1->data > ptr2->data)
+                {
+                    temp = ptr1->data;
+                    ptr1->data = ptr2->data;
+                    ptr2->data = temp;
+                }
+
+                ptr2 = ptr2->next;
+            }
+
+            ptr1 = ptr1->next;
+        }
+
+        printf("The list is sorted\n");
+    }
+
+    return start;
+}
+
 struct node *display(struct node *start)
 {
     struct node *ptr;
     ptr = start;
 
-    while (ptr != NULL)
+    if (start == NULL)
     {
-        printf("%d\t", ptr->data);
-        ptr = ptr->next;
+        printf("There is no list\n");
+    }
+
+    else
+    {
+        while (ptr != NULL)
+        {
+            printf("%d\t", ptr->data);
+            ptr = ptr->next;
+        }
     }
 
     return start;
