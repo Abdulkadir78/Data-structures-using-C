@@ -51,37 +51,30 @@ int main()
 
         case 4:
             start = insert_before(start);
-            printf("Element inserted\n");
             break;
 
         case 5:
             start = insert_after(start);
-            printf("Element inserted\n");
             break;
 
         case 6:
             start = delete_node(start);
-            printf("Element deleted\n");
             break;
 
         case 7:
             start = delete_beginning(start);
-            printf("Beginning element deleted\n");
             break;
 
         case 8:
             start = delete_end(start);
-            printf("End element deleted\n");
             break;
 
         case 9:
             start = delete_after(start);
-            printf("Element deleted\n");
             break;
 
         case 10:
             start = delete_list(start);
-            printf("List deleted\n");
             break;
 
         case 11:
@@ -97,11 +90,13 @@ int main()
             {
                 break;
             }
+
             else
             {
                 printf("Invalid choice\n");
             }
         }
+
     } while (choice != 13);
 
     return 0;
@@ -166,20 +161,29 @@ struct node *insert_end(struct node *start)
     int num;
     struct node *new_node, *ptr;
 
-    printf("Enter the element: ");
-    scanf("%d", &num);
-
-    new_node = (struct node *)malloc(sizeof(struct node));
-    new_node->data = num;
-    ptr = start;
-
-    while (ptr->next != NULL)
+    if (start == NULL) //condition if there is no list created before trying to insert
     {
-        ptr = ptr->next;
+        start = insert_beginning(start);
     }
 
-    ptr->next = new_node;
-    new_node->next = NULL;
+    else
+    {
+        printf("Enter the element: ");
+        scanf("%d", &num);
+
+        new_node = (struct node *)malloc(sizeof(struct node));
+        new_node->data = num;
+        ptr = start;
+
+        while (ptr->next != NULL)
+        {
+            ptr = ptr->next;
+        }
+
+        ptr->next = new_node;
+        new_node->next = NULL;
+    }
+
     return start;
 }
 
@@ -188,24 +192,42 @@ struct node *insert_before(struct node *start)
     int val, num;
     struct node *new_node, *ptr, *preptr;
 
-    printf("Enter the element before which you want to insert: ");
-    scanf("%d", &val);
-
-    printf("Enter the element: ");
-    scanf("%d", &num);
-
-    new_node = (struct node *)malloc(sizeof(struct node));
-    new_node->data = num;
-    ptr = start;
-
-    while (ptr->data != val)
+    if (start == NULL) //condition if there is no list created before trying to insert
     {
-        preptr = ptr;
-        ptr = ptr->next;
+        printf("No element to insert before\n");
     }
 
-    preptr->next = new_node;
-    new_node->next = ptr;
+    else
+    {
+
+        printf("Enter the element before which you want to insert: ");
+        scanf("%d", &val);
+
+        if (val == start->data) //condition if user wants to insert before the starting(first) element
+        {
+            start = insert_beginning(start);
+        }
+
+        else
+        {
+            printf("Enter the element: ");
+            scanf("%d", &num);
+
+            new_node = (struct node *)malloc(sizeof(struct node));
+            new_node->data = num;
+            ptr = start;
+
+            while (ptr->data != val)
+            {
+                preptr = ptr;
+                ptr = ptr->next;
+            }
+
+            preptr->next = new_node;
+            new_node->next = ptr;
+            printf("Element inserted\n");
+        }
+    }
     return start;
 }
 
@@ -214,25 +236,35 @@ struct node *insert_after(struct node *start)
     int num, val;
     struct node *new_node, *ptr, *preptr;
 
-    printf("Enter the element after which you want to insert: ");
-    scanf("%d", &val);
-
-    printf("Enter the element to be inserted: ");
-    scanf("%d", &num);
-
-    ptr = start;
-    preptr = ptr;
-    new_node = (struct node *)malloc(sizeof(struct node));
-    new_node->data = num;
-
-    while (preptr->data != val)
+    if (start == NULL) //condition if there is no list created before trying to insert
     {
-        preptr = ptr;
-        ptr = ptr->next;
+        printf("No element to insert after\n");
     }
 
-    preptr->next = new_node;
-    new_node->next = ptr;
+    else
+    {
+
+        printf("Enter the element after which you want to insert: ");
+        scanf("%d", &val);
+
+        printf("Enter the element to be inserted: ");
+        scanf("%d", &num);
+
+        ptr = start;
+        preptr = ptr;
+        new_node = (struct node *)malloc(sizeof(struct node));
+        new_node->data = num;
+
+        while (preptr->data != val)
+        {
+            preptr = ptr;
+            ptr = ptr->next;
+        }
+
+        preptr->next = new_node;
+        new_node->next = ptr;
+        printf("Element inserted\n");
+    }
     return start;
 }
 
@@ -241,46 +273,75 @@ struct node *delete_node(struct node *start)
     int val;
     struct node *ptr, *preptr, *temp;
 
-    printf("Enter the element to be deleted: ");
-    scanf("%d", &val);
-
-    ptr = start;
-
-    while (ptr->data != val)
+    if (start == NULL) //condition if user wants to delete before creating a list
     {
-        preptr = ptr;
-        ptr = ptr->next;
-        temp = ptr;
+        printf("No element to delete\n");
     }
 
-    temp = temp->next;
-    free(ptr);
-    preptr->next = temp;
+    else
+    {
+
+        printf("Enter the element to be deleted: ");
+        scanf("%d", &val);
+
+        ptr = start;
+
+        while (ptr->data != val)
+        {
+            preptr = ptr;
+            ptr = ptr->next;
+            temp = ptr;
+        }
+
+        temp = temp->next;
+        free(ptr);
+        preptr->next = temp;
+    }
     return start;
 }
 
 struct node *delete_beginning(struct node *start)
 {
-    struct node *ptr;
-    ptr = start;
-    start = start->next;
-    free(ptr);
+    if (start == NULL) //condition if user wants to delete before creating a list
+    {
+        printf("No element to delete\n");
+    }
+
+    else
+    {
+        struct node *ptr;
+        ptr = start;
+        start = start->next;
+        free(ptr);
+        printf("Beginning element deleted\n");
+    }
+
     return start;
 }
 
 struct node *delete_end(struct node *start)
 {
     struct node *ptr, *preptr;
-    ptr = start;
 
-    while (ptr->next != NULL)
+    if (start == NULL) //condition if user wants to delete before creating a list
     {
-        preptr = ptr;
-        ptr = ptr->next;
+        printf("No element to delete\n");
     }
 
-    free(ptr);
-    preptr->next = NULL;
+    else
+    {
+        ptr = start;
+        while (ptr->next != NULL)
+        {
+            preptr = ptr;
+            ptr = ptr->next;
+        }
+
+        free(ptr);
+        preptr->next = NULL;
+        printf("Done!");
+    }
+
     return start;
 }
 
@@ -289,37 +350,63 @@ struct node *delete_after(struct node *start)
     int val;
     struct node *ptr, *preptr, *postptr;
 
-    printf("Enter the element after which you want to delete: ");
-    scanf("%d", &val);
-    ptr = start;
-    preptr = ptr;
-    postptr = ptr;
-
-    while (preptr->data != val)
+    if (start == NULL) //condition if user wants to delete before creating a list
     {
-        preptr = ptr;
-        ptr = ptr->next;
-        postptr = ptr;
+        printf("No element to delete\n");
     }
 
-    postptr = postptr->next;
-    free(ptr);
-    preptr->next = postptr;
+    else
+    {
+        printf("Enter the element after which you want to delete: ");
+        scanf("%d", &val);
+
+        ptr = start;
+        preptr = ptr;
+        postptr = ptr;
+
+        while (preptr->data != val)
+        {
+            preptr = ptr;
+            ptr = ptr->next;
+            postptr = ptr;
+        }
+
+        if (preptr->next == NULL) //condition if user wants to delete after the end(last) element
+        {
+            printf("No element to delete after %d\n", val);
+        }
+
+        else
+        {
+            postptr = postptr->next;
+            free(ptr);
+            preptr->next = postptr;
+            printf("Element deleted\n");
+        }
+    }
     return start;
 }
 
 struct node *delete_list(struct node *start)
 {
     struct node *ptr;
-    ptr = start;
 
-    while (ptr != NULL)
+    if (start == NULL) //condition if user wants to delete the list before creating one
     {
-        ptr = ptr->next;
-        free(start);
-        start = ptr;
+        printf("There is no list\n");
     }
 
+    else
+    {
+        ptr = start;
+        while (ptr != NULL)
+        {
+            ptr = ptr->next;
+            free(start);
+            start = ptr;
+        }
+        printf("List deleted\n");
+    }
     return start;
 }
 
@@ -327,17 +414,17 @@ struct node *sort_list(struct node *start)
 {
     int temp;
     struct node *ptr1, *ptr2;
-    ptr1 = start;
 
-    ptr2 = ptr1;
-
-    if (start == NULL)
+    if (start == NULL) //condition if there is no list created before
     {
         printf("There is no list\n");
     }
 
     else
     {
+        ptr1 = start;
+        ptr2 = ptr1;
+
         while (ptr1->next != NULL)
         {
             ptr2 = ptr1->next;
@@ -368,7 +455,7 @@ struct node *display(struct node *start)
     struct node *ptr;
     ptr = start;
 
-    if (start == NULL)
+    if (start == NULL) //condition if there is no list created before
     {
         printf("There is no list\n");
     }
