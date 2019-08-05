@@ -283,19 +283,28 @@ struct node *delete_node(struct node *start)
 
         printf("Enter the element to be deleted: ");
         scanf("%d", &val);
-
         ptr = start;
 
-        while (ptr->data != val)
+        if (start->data == val) //condition if user wants to delete beginning(first) element
         {
-            preptr = ptr;
-            ptr = ptr->next;
-            temp = ptr;
+            start = delete_beginning(start);
         }
 
-        temp = temp->next;
-        free(ptr);
-        preptr->next = temp;
+        else
+        {
+
+            while (ptr->data != val)
+            {
+                preptr = ptr;
+                ptr = ptr->next;
+                temp = ptr;
+            }
+
+            temp = temp->next;
+            free(ptr);
+            preptr->next = temp;
+            printf("Element deleted\n");
+        }
     }
     return start;
 }
