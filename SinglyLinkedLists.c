@@ -22,6 +22,8 @@ struct node *delete_list(struct node *);
 struct node *sort_list(struct node *);
 struct node *display(struct node *);
 
+int noElementSearch(int);
+
 int main()
 {
     int choice;
@@ -85,16 +87,11 @@ int main()
             start = display(start);
             break;
 
-        default:
-            if (choice == 13)
-            {
-                break;
-            }
+        case 13:
+            break;
 
-            else
-            {
-                printf("Invalid choice\n");
-            }
+        default:
+            printf("Invalid choice\n");
         }
 
     } while (choice != 13);
@@ -270,7 +267,7 @@ struct node *insert_after(struct node *start)
 
 struct node *delete_node(struct node *start)
 {
-    int val;
+    int val, no_node;
     struct node *ptr, *preptr, *temp;
 
     if (start == NULL) //condition if user wants to delete before creating a list
@@ -285,7 +282,14 @@ struct node *delete_node(struct node *start)
         scanf("%d", &val);
         ptr = start;
 
-        if (start->data == val) //condition if user wants to delete beginning(first) element
+        no_node = noElementSearch(val); // when there is no such element in the list
+                                        // function is defined below
+        if (no_node == 0)
+        {
+            printf("Element not found\n");
+        }
+
+        else if (start->data == val) //condition if user wants to delete beginning(first) element
         {
             start = delete_beginning(start);
         }
@@ -307,6 +311,26 @@ struct node *delete_node(struct node *start)
         }
     }
     return start;
+}
+
+int noElementSearch(int temp) //this function is written for when the user tries to delete an element which is not present in the list
+{
+    struct node *ptr;
+
+    ptr = start;
+    while (ptr != NULL)
+    {
+        if (ptr->data == temp)
+        {
+            return -1;
+        }
+        ptr = ptr->next;
+    }
+
+    if (ptr == NULL)
+    {
+        return 0;
+    }
 }
 
 struct node *delete_beginning(struct node *start)
@@ -337,6 +361,13 @@ struct node *delete_end(struct node *start)
         printf("No element to delete\n");
     }
 
+    else if (start->next == NULL)
+    {
+        free(start);
+        start = NULL;
+        printf("Element deleted!\n");
+    }
+
     else
     {
         ptr = start;
@@ -348,7 +379,7 @@ struct node *delete_end(struct node *start)
 
         free(ptr);
         preptr->next = NULL;
-        printf("Done!");
+        printf("Done!\n");
     }
 
     return start;
@@ -356,7 +387,7 @@ struct node *delete_end(struct node *start)
 
 struct node *delete_after(struct node *start)
 {
-    int val;
+    int val, no_node;
     struct node *ptr, *preptr, *postptr;
 
     if (start == NULL) //condition if user wants to delete before creating a list
@@ -369,28 +400,46 @@ struct node *delete_after(struct node *start)
         printf("Enter the element after which you want to delete: ");
         scanf("%d", &val);
 
-        ptr = start;
-        preptr = ptr;
-        postptr = ptr;
+        no_node = noElementSearch(val); // when there is no such element in the list
 
-        while (preptr->data != val)
+        if (no_node == 0)
         {
-            preptr = ptr;
-            ptr = ptr->next;
-            postptr = ptr;
-        }
-
-        if (preptr->next == NULL) //condition if user wants to delete after the end(last) element
-        {
-            printf("No element to delete after %d\n", val);
+            printf("Element not found\n");
         }
 
         else
         {
-            postptr = postptr->next;
-            free(ptr);
-            preptr->next = postptr;
-            printf("Element deleted\n");
+            ptr = start;
+            preptr = ptr;
+            postptr = ptr;
+
+            while (preptr->data != val)
+            {
+                preptr = ptr;
+                ptr = ptr->next;
+                postptr = ptr;
+            }
+
+            if (preptr->next == NULL) //condition if user wants to delete after the end(last) element
+            {
+                printf("No element to delete after %d\n", val);
+            }
+
+            else if (start->data == val) // if user wants to delete after the first element
+            {
+                ptr = ptr->next;
+                postptr = ptr->next;
+                free(ptr);
+                preptr->next = postptr;
+                printf("Element deleted\n");
+            }
+            else
+            {
+                postptr = postptr->next;
+                free(ptr);
+                preptr->next = postptr;
+                printf("Element deleted\n");
+            }
         }
     }
     return start;
